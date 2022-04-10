@@ -3,7 +3,7 @@ title: "Nimのメモリ管理を理解する② ― Nimのムーブセマンテ�
 emoji: "👑"
 type: "idea" # tech: 技術記事 / idea: アイデア
 topics: ["nim"]
-published: false
+published: true
 ---
 
 Nimのメモリ管理について理解していこう、そしてその内容を日本語でちゃんと公開されている状態にしようということで、昔書いた記事からシリーズ化させた続編として今回は作者の講演の全訳をしてみたいと思います。
