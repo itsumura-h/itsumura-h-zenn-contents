@@ -1,0 +1,10 @@
+{
+  "name": "itsumura-h-zenn-contents",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "itsumura-h <dumblepy@mail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "zenn-cli": "^0.1.108"
+  }
+}
