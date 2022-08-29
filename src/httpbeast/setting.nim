@@ -5,11 +5,7 @@ import
 
 
 proc initDb*():Rdb =
-  when compileOption("threads"):
-    return dbOpen(PostgreSQL, "database", "user", "pass", "db", 5432, 24, 30, false, false)
-    # return dbOpen(PostgreSQL, "database", "user", "pass", "db", 5432, 96, 30, false, false)
-  else:
-    return dbOpen(PostgreSQL, "database", "user", "pass", "db", 5432, 96, 30, false, false)
+  return dbOpen(PostgreSQL, "database", "user", "pass", "db", 5432, 20, 30, false, false)
 
 # ============================================================
 type Plugin* = ref object
