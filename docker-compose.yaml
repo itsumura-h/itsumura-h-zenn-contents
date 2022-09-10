@@ -20,6 +20,16 @@ services:
     depends_on:
       - db
 
+  dotnet:
+    build: ./docker/dotnet
+    tty: true
+    ports:
+      - 9002:5000
+    volumes:
+      - .:/application
+    depends_on:
+      - db
+
   db:
     image: postgres:alpine #pgsqlが準備されているimageを指定
     tty: true
