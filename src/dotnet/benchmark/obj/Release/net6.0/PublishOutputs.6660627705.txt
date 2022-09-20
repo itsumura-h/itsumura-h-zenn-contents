@@ -1,0 +1,11 @@
+/application/src/dotnet/benchmark/out/benchmark
+/application/src/dotnet/benchmark/out/appsettings.Development.json
+/application/src/dotnet/benchmark/out/appsettings.json
+/application/src/dotnet/benchmark/out/benchmark.dll
+/application/src/dotnet/benchmark/out/benchmark.deps.json
+/application/src/dotnet/benchmark/out/benchmark.runtimeconfig.json
+/application/src/dotnet/benchmark/out/benchmark.pdb
+/application/src/dotnet/benchmark/out/Microsoft.OpenApi.dll
+/application/src/dotnet/benchmark/out/Swashbuckle.AspNetCore.Swagger.dll
+/application/src/dotnet/benchmark/out/Swashbuckle.AspNetCore.SwaggerGen.dll
+/application/src/dotnet/benchmark/out/Swashbuckle.AspNetCore.SwaggerUI.dll
