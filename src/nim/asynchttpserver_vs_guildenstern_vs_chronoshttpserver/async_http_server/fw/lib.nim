@@ -3,12 +3,12 @@ import
 
 
 template serveWithPlugin*(routes, createPlugin:untyped):untyped =
-  proc threadProc(params:(Routes, Plugin, int)) {.thread.} =
-    proc asyncProc(params:(Routes, Plugin, int)) {.async.} =
+  proc threadProc(params:(Routes, Plugin)) {.thread.} =
+    proc asyncProc(params:(Routes, Plugin)) {.async.} =
       var server = newAsyncHttpServer(true, true)
       proc cb(req: Request) {.async, gcsafe.} =
         let headers = {"Content-type": "text/plain; charset=utf-8"}
-        let (routes, plugin, nThreads) = params
+        let (routes, plugin) = params
         var hasRoute = false
         for route in routes:
           if req.url.path == route[0].path and req.reqMethod == route[0].httpMethod:
@@ -26,26 +26,25 @@ template serveWithPlugin*(routes, createPlugin:untyped):untyped =
         else:
           await sleepAsync(500)
 
-    while true:
-      try:
-        asyncCheck asyncProc(params)
-        runForever()
-      except:
-        echo repr(getCurrentException())
+    try:
+      asyncCheck asyncProc(params)
+      runForever()
+    except:
+      echo repr(getCurrentException())
 
   proc serve(routes:Routes, `createPlugin`:proc():Plugin) =
     when compileOption("threads"):
       let countThreads = countProcessors()
-      var params:seq[(Routes, Plugin, int)]
+      var params:seq[(Routes, Plugin)]
       for i in 1..countThreads:
-        params.add((routes, `createPlugin`(), i-1))
-      echo("Starting ", countThreads, " threads")
-      var thr = newSeq[Thread[(Routes, Plugin, int)]](countThreads)
+        params.add((routes, `createPlugin`()))
+      var thr = newSeq[Thread[(Routes, Plugin)]](countThreads)
       for i in 0..countThreads-1:
         createThread(thr[i], threadProc, params[i])
+      echo("Starting ", countThreads, " threads")
       joinThreads(thr)
     else:
       echo("Starting ", 1, " thread")
-      threadProc((routes, `createPlugin`(), 1))
+      threadProc((routes, `createPlugin`()))
 
   serve(`routes`, `createPlugin`)

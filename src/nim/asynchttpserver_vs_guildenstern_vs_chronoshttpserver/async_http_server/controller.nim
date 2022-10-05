@@ -5,9 +5,25 @@ import
   std/strutils,
   std/sequtils,
   allographer/query_builder,
-  ./setting
+  ./fw/lib_view,
+  ./setting,
+  ./views/index_view
 
-proc index*(plugin:Plugin):Future[string] {.async, gcsafe.} =
+proc plaintext*(plugin:Plugin):Future[string] {.async, gcsafe.} =
+  return "plaintext"
+
+proc indexPage*(plugin:Plugin):Future[string] {.async, gcsafe.} =
+  var resp  = $(indexView("asynchttpserver").await)
+  return resp
+
+proc sleep*(plugin:Plugin):Future[string] {.async, gcsafe.} =
+  sleepAsync(10000).await
+  return "sleep"
+
+proc json*(plugin:Plugin):Future[string] {.async, gcsafe.} =
+  return $(%*{"message": "Hello, World!"})
+
+proc queries*(plugin:Plugin):Future[string] {.async, gcsafe.} =
   let nThreads = 500
   var futures = newSeq[Future[Option[JsonNode]]](nThreads)
   for i in 1..nThreads:
@@ -18,6 +34,3 @@ proc index*(plugin:Plugin):Future[string] {.async, gcsafe.} =
       x.get()
   )
   return $(%response)
-
-proc show*(plugin:Plugin):Future[string] {.async, gcsafe.} =
-  return "show"

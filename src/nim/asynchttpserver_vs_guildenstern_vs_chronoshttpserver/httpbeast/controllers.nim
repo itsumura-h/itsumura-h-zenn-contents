@@ -12,6 +12,10 @@ import
 proc plaintext*(req: Request, plugin:Plugin):Future[string] {.async, gcsafe.} =
   return "plaintext"
 
+proc sleep*(req: Request, plugin:Plugin):Future[string] {.async, gcsafe.} =
+  sleepAsync(10000).await
+  return "sleep"
+
 proc json*(req: Request, plugin:Plugin):Future[string] {.async, gcsafe.} =
   return $(%*{"message": "Hello, World!"})
 
@@ -26,4 +30,3 @@ proc queries*(req: Request, plugin:Plugin):Future[string] {.async, gcsafe.} =
       x.get()
   )
   return $(%response)
-

@@ -8,8 +8,11 @@ import
 
 
 let routes = @[
-  (Route(path:"/", httpMethod:HttpGet), Controller.new(index)),
-  (Route(path:"/show", httpMethod:HttpGet), Controller.new(show))
+  (Route(path:"/plaintext", httpMethod:HttpGet), Controller.new(plainText)),
+  (Route(path:"/sleep", httpMethod:HttpGet), Controller.new(sleep)),
+  (Route(path:"/index-page", httpMethod:HttpGet), Controller.new(indexPage)),
+  (Route(path:"/json", httpMethod:HttpGet), Controller.new(json)),
+  (Route(path:"/queries", httpMethod:HttpGet), Controller.new(queries))
 ]
 
 proc createPlugin*():Plugin =
