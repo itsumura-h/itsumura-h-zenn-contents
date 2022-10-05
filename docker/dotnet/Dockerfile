@@ -15,4 +15,6 @@ RUN apt install -y --fix-missing \
         libmariadb-dev \
         libsass-dev
 
+ENV PATH $PATH:/root/.dotnet/tools
+
 WORKDIR /application

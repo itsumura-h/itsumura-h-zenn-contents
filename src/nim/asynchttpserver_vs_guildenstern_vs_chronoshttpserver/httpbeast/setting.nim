@@ -20,6 +20,7 @@ proc new*(_:type Plugin):Plugin =
   return Plugin(
     rdb: initDb()
   )
+  # return Plugin()
 
 # ============================================================
 type Controller* = ref object

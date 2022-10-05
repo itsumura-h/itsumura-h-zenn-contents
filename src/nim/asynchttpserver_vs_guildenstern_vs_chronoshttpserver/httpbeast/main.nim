@@ -10,6 +10,7 @@ import
 
 let routes = @[
   (Route(path:"/plaintext", httpMethod:HttpGet), Controller.new(plainText)),
+  (Route(path:"/sleep", httpMethod:HttpGet), Controller.new(sleep)),
   (Route(path:"/json", httpMethod:HttpGet), Controller.new(json)),
   (Route(path:"/queries", httpMethod:HttpGet), Controller.new(queries))
 ]
@@ -17,8 +18,8 @@ let routes = @[
 proc cd(req: Request, routes:Routes, plugin:Plugin): Future[void] {.async.}=
   var hasRoute = false
   for route in routes:
-    if req.path.get() == route[0].path and req.httpMethod.get() == route[0].httpMethod:
-      let resp = route[1].action(req, plugin).waitFor()
+    if req.httpMethod.get() == route[0].httpMethod and req.path.get() == route[0].path:
+      let resp = route[1].action(req, plugin).waitFor
       req.send(resp)
       hasRoute = true
       break
@@ -32,7 +33,7 @@ let settings = initSettings(port=Port(5000), reusePort=true)
 proc createPlugin*():Plugin =
   return Plugin.new()
 
-# serveWithPlugin(onRequest, routes, createPlugin)
+serveWithPlugin(onRequest, routes, createPlugin)
 
 
 type OnRequest* = proc (req: Request, routes:Routes, plugin:Plugin): Future[void] {.gcsafe.}
@@ -216,7 +217,7 @@ proc eventLoop(
       asyncdispatch.poll(0)
 
 
-proc run*(onRequest: OnRequest, settings: Settings, routes:Routes, `createPlugin`:proc():Plugin) =
+proc run*(onRequest: OnRequest, settings: Settings, routes:Routes, createPlugin:proc():Plugin) =
   when compileOption("threads"):
     let numThreads =
       if settings.numThreads == 0: countProcessors()
@@ -228,18 +229,22 @@ proc run*(onRequest: OnRequest, settings: Settings, routes:Routes, `createPlugin
   if numThreads > 1:
     when compileOption("threads"):
       var threads = newSeq[Thread[(OnRequest, Settings, bool, Routes, Plugin)]](numThreads)
-      var params:seq[(OnRequest, Settings, bool, Routes, Plugin)]
-      for i in 1..numThreads:
-        params.add((onRequest, settings, false, routes, `createPlugin`()))
-      for i in 0..numThreads-1:
+      # var params:seq[(OnRequest, Settings, bool, Routes, Plugin)]
+      # for i in 1..numThreads:
+      #   params.add((onRequest, settings, false, routes, `createPlugin`()))
+      # for i in 0..numThreads-1:
+      #   createThread[(OnRequest, Settings, bool, Routes, Plugin)](
+      #     threads[i], eventLoop, params[i]
+      #   )
+      # joinThreads(threads)
+      for t in threads.mitems():
         createThread[(OnRequest, Settings, bool, Routes, Plugin)](
-          threads[i], eventLoop, params[i]
+          t, eventLoop, (onRequest, settings, false, routes, createPlugin())
         )
-      joinThreads(threads)
     else:
       assert false
   echo("Listening on port ", settings.port) # This line is used in the tester to signal readiness.
-  eventLoop((onRequest, settings, true, routes, `createPlugin`()))
+  eventLoop((onRequest, settings, true, routes, createPlugin()))
 
 
 run(cd, settings, routes, createPlugin)

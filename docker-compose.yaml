@@ -4,7 +4,7 @@ services:
     build: ./docker/nim
     tty: true
     ports:
-      - 9000:5000
+      - 9010:5000
     volumes:
       - .:/application
     depends_on:
@@ -14,7 +14,7 @@ services:
     build: ./docker/rust
     tty: true
     ports:
-      - 9001:5000
+      - 9011:5000
     volumes:
       - .:/application
     depends_on:
@@ -24,7 +24,7 @@ services:
     build: ./docker/dotnet
     tty: true
     ports:
-      - 9002:5000
+      - 9012:5000
     volumes:
       - .:/application
     depends_on:
