@@ -14,7 +14,7 @@ https://zenn.dev/dumblepy/articles/3db2134ff88763
 ## Motivation
 Nim is a programming language with a simple Python-like syntax that can be transpiled to C and compiled to binary, combining low learning cost, high development productivity, and fast execution speed.
 The compiler automatically performs safe scope-based memory management based on ownership and borrowing, and since there is no need to think about references and pointers, "code for coding's sake" can be reduced, especially in application development, and the description can focus solely on the business logic.
-However, it is not yet widely used, and when we ask those who do not use it, we often hear that the reason is that "there are not enough libraries.
+However, it is not yet widely used, and when we ask those who do not use it, we often hear that the reason is that "there are not enough libraries".
 Nim can easily incorporate assets that already exist in C, because it converts to C once at compile time, and it can work very seamlessly with both dynamic linking and static archives.
 
 Rust, on the other hand, is a thoroughly memory-safe language at the lowest levels, preventing segfaults and memory leaks and running very fast.
