@@ -1,59 +1,66 @@
 ---
-title: "NimでJavaScriptターゲットの開発をする方法"
-emoji: "👑"
-type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["nim", "javascript", "フロントエンド"]
-published: true
+title: Techniques for developing JavaScript targets in Nim
+published: false
+description: 
+tags: #nim #javascript #webdev #frontend
+cover_image: https://dev-to-uploads.s3.amazonaws.com/uploads/articles/89br4ludq878y7f6lt5o.jpeg
+# Use a ratio of 100:42 for best results.
+# published_at: 2023-03-06 23:03 +0000
 ---
 
-NimではC言語にトランスパイルして実行可能バイナリを作る以外にもJavaScriptを出力することもできます。
-これが非常にテクニックが必要なので今回はわかりやすく網羅的に解説していきたいと思います。
 
-## JSターゲットの基礎
-### コンパイル
+In addition to transporting to C and creating executable binaries, Nim can also output JavaScript.
+However, this requires a great deal of technique, so I would like to explain it comprehensively and exhaustively in this article.
+
+## Basics of JS Targets
+### Compiling
 https://nim-lang.org/docs/backends.html#backends-the-javascript-target
 
-```nim:js_sample.nim
+js_sample.nim
+```nim
 echo "hoge"
 ```
 
-```sh:コンパイル
+```sh
 nim js js_sample.nim
 ```
 
-`nim js`コマンドで`js_sample.js`を出力します。
-もし実行環境にNodeJSが入っていれば、そのまま実行することもできます。
+The `nim js` command will output `js_sample.js`.
+If you have NodeJS in your runtime environment, you can run it as is.
 
-```sh:コンパイル
+```sh
 nim js -r js_sample.nim
 ```
-```sh:出力
+
+outputs
+```sh
 hoge
 ```
 
-### ライブラリ
-JavaScript向けの標準ライブラリがあり、便利に使うことができます。
+### libraries
+There is a standard library for JavaScript that can be used conveniently.
 
-|lib|説明|
+|lib|description|
 |---|---|
-|[asyncjs](https://nim-lang.org/docs/asyncjs.html)|JSの非同期処理のasync/awaitを使うことができます。Nimの`Future[T]`がJSの`Promise<T>`になります。|
-|[dom](https://nim-lang.org/docs/dom.html)|ブラウザが持っている`document`や`window`などDOM操作をするためのライブラリです。|
-|[jsbigints ](https://nim-lang.org/docs/jsbigints.html)|JSのBitInt型を扱います。|
-|[jsconsole](https://nim-lang.org/docs/jsconsole.html)|`conoel.log()`などを呼び出せるようになります。|
-|[jscore](https://nim-lang.org/docs/jscore.html)|JSの`Math`、`JSON`、`Date`などのライブラリを提供しますが標準ライブラリを使ったほうが安全です。|
-|[jsffi](https://nim-lang.org/docs/jsffi.html)|NimとJSの間で型を相互に変換するライブラリです。|
-|[jsfetch](https://nim-lang.org/docs/jsfetch.html)|JSからAPIアクセスするためのHTTPクライアントです。|
-|[jsheaders](https://nim-lang.org/docs/jsheaders.html)|jsfetchと共に使うHTTPヘッダーを扱うライブラリです。|
-|[jsformdata](https://nim-lang.org/docs/jsformdata.html)|jsfetchと共に使うHTTPフォームデータを扱うライブラリです。|
-|[jsre](https://nim-lang.org/docs/jsre.html)|JSでの正規表現を扱うライブラリです。|
-|[jsutils](https://nim-lang.org/docs/jsutils.html)|JSでの型を扱う便利機能を提供するライブラリです。|
+|[asyncjs](https://nim-lang.org/docs/asyncjs.html)|You can use async/await for asynchronous processing in JS, where `Future[T]` in Nim becomes `Promise<T>` in JS.|
+|[dom](https://nim-lang.org/docs/dom.html)|A library for manipulating the DOM, including the `document` and `window` that the browser has.|
+|[jsbigints ](https://nim-lang.org/docs/jsbigints.html)|Handles JS BitInt types.|
+|[jsconsole](https://nim-lang.org/docs/jsconsole.html)|You can call `conoel.log()` and others.|
+|[jscore](https://nim-lang.org/docs/jscore.html)|JS `Math`, `JSON`, `Date` and other libraries are provided, but it is safer to use the Nim standard libraries.|
+|[jsffi](https://nim-lang.org/docs/jsffi.html)|This library converts types between Nim and JS mutually.|
+|[jsfetch](https://nim-lang.org/docs/jsfetch.html)|HTTP client for API access from JS.|
+|[jsheaders](https://nim-lang.org/docs/jsheaders.html)|A library for handling HTTP headers to be used with jsfetch.|
+|[jsformdata](https://nim-lang.org/docs/jsformdata.html)|A library for handling HTTP form data for use with jsfetch.|
+|[jsre](https://nim-lang.org/docs/jsre.html)|A library for regular expressions in JS.|
+|[jsutils](https://nim-lang.org/docs/jsutils.html)|This library provides convenience functions for handling types in JS.|
 
-また3rdパーティライブラリとしては[`nodejs`](https://github.com/juancarlospaco/nodejs)というラッパーライブラリがあります。かなり巨大です。
+Another 3rd party library is a wrapper library called [`nodejs`](https://github.com/juancarlospaco/nodejs). It is quite huge.
 
-### 型の扱い
-Nimの型はJSに出力されるとどうなるか見ていきましょう。
+### How to handle types
+Let's see what happens when Nim types are output to JS.
 
-```nim:app.nim
+app.nim
+```nim
 import std/jsffi
 import std/times
 
@@ -63,9 +70,11 @@ let str = "string"
 let cstr:cstring = "cstring"
 let date = now()
 ```
-コンパイルするとJSファイルが出力されます。
 
-```js:app.js
+This is converted as follows.
+
+app.js
+```js
 function makeNimstrLit(c_33556801) {
       var result = [];
   for (var i = 0; i < c_33556801.length; ++i) {
@@ -101,11 +110,10 @@ var cstr_469762054 = "cstring";
 var date_469762055 = now_922748331();
 ```
 
-JSの世界で素の文字列として扱うには、`cstring`を使う必要があります。
+To treat it as a bare string in the JS world, you need to use `cstring`.
 
-
-### 配列の扱い
-JSの世界の動的配列を扱うためのJsObject型が用意されています。
+### How to handle arrays
+The JsObject type is provided to handle dynamic arrays in the JS world.
 
 https://nim-lang.org/docs/jsffi.html#JsObject
 
@@ -114,7 +122,8 @@ JsObject = ref object of JsRoot
   Dynamically typed wrapper around a JavaScript object.
 ```
 
-```nim:app.nim
+app.nim
+```nim
 import std/jsconsole
 import std/jsffi
 
@@ -130,14 +139,15 @@ proc func1()  =
 func1()
 ```
 
-```sh:実行結果
+Result
+```sh
 { id: 1, name: 'Alice', status: true }
 object
 ```
 
-Nimの構造体を定義するとJSの世界ではobjectとして扱われます。
-`to`と`toJs`の関数を使って、JsObjectと構造体の相互変換ができます。
-JsObjectを使うとコンパイル時の静的な型チェックが行われなくなるので、なるべくロジックは構造体とそのメソッドを使ったほうが良いでしょう。
+When you define a Nim struct, it is treated as an object in the JS world.
+You can use the `to` and `toJs` functions to interconvert between JsObjects and structs.
+Since JsObjects do not perform static type checking at compile time, it is better to use structs and their methods for logic as much as possible.
 
 ```nim
 proc to(x: JsObject; T: typedesc): T:type {.importjs: "(#)"}
@@ -147,7 +157,8 @@ proc toJs[T](val: T): JsObject {.importjs: "(#)"}
   Converts a value of any type to type JsObject.
 ```
 
-```nim:app.nim
+app.nim
+```nim
 type Person = object
   id:int
   name:cstring
@@ -175,18 +186,19 @@ proc func1()  =
 func1()
 ```
 
-```sh:実行結果
+Result
+```sh
 { id: 1, name: 'Alice', status: true }
 object
 { id: 1, name: 'Alice', status: true }
 { id: 2, name: 'Bob', status: false }
 ```
 
+### Dom manipulation
+Let's display the text entered from the HTML input tag on the p tag in real time.
 
-### DOM操作
-HTMLのinputタグから入力した文字をリアルタイムでpタグに表示させてみましょう。
-
-```html:index.html
+index.html
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -201,7 +213,8 @@ HTMLのinputタグから入力した文字をリアルタイムでpタグに表�
 </html>
 ```
 
-```nim:app.nim
+app.nim
+```nim
 import dom
 
 proc onInput(e:Event) =
@@ -212,8 +225,10 @@ let input = document.getElementById("input")
 input.addEventListener("input", onInput)
 ```
 
-JSファイルが出力されます。
-```js:app.js
+The following JS file is output.
+
+app.js
+```js
 function onInput_469762050(e_469762051) {
     var content_469762052 = document.getElementById("content");
     content_469762052.innerText = e_469762051.target.value;
@@ -224,13 +239,14 @@ var input_469762062 = document.getElementById("input");
 input_469762062.addEventListener("input", onInput_469762050, false);
 ```
 
-[domライブラリ](https://nim-lang.org/docs/dom.html)を使うことで、Nimから`Event`、`document`、`getElementById`などが使えるようになります。
+The [dom library](https://nim-lang.org/docs/dom.html) allows you to use `Event`, `document`, `getElementById`, etc. from Nim.
 
-### APIアクセス
-フロントエンドの開発をするにはAPIアクセスは欠かせません。
-NimにはJSターゲットでAPIアクセスをするための[`jsfetch`](https://nim-lang.org/docs/jsfetch.html)ライブラリが用意されています。
+### API access
+API access is essential for front-end development.
+Nim provides the [`jsfetch`](https://nim-lang.org/docs/jsfetch.html) library for API access with JS targets.
 
-```nim:app.nim
+app.nim
+```nim
 import std/asyncjs
 import std/jsfetch
 import std/jsconsole
@@ -244,8 +260,10 @@ proc apiAccess() {.async.} =
 discard apiAccess()
 ```
 
-JSファイルが出力されます。
-```js:app.js
+The following JS file is output.
+
+app.js
+```js
 async function apiAccess_469762071() {
   var result_469762073 = null;
 
@@ -264,14 +282,15 @@ async function apiAccess_469762071() {
 var _ = apiAccess_469762071();
 ```
 
-## プラグマについて
-NimではJSターゲットの開発を行う時にはプラグマをよく使う必要があります。
-プラグマとは他の言語であるアノテーションのようなもので、コンパイラに対してコンパイル時に指示を出すことができます。
+## Pragmas
+Nim requires frequent use of pragmas when developing JS targets.
+Pragmas are like annotations in other languages, which allow you to give compile-time instructions to the compiler.
 
 ### exportc
-これまで見てきた出力されたJSファイルを見ると、変数名や関数名にsuffixがついていました。`exportc`を使うことで、suffixを付けるのを禁止できます。
+The output JS files we have seen so far have suffixes in variable and function names. By using `exportc`, you can prohibit suffixes from being added.
 
-```nim:app.nim
+app.nim
+```nim
 import std/jsconsole
 import std/jsffi
 
@@ -283,7 +302,8 @@ let name {.exportc.}: cstring = "Alice"
 hello(name)
 ```
 
-```js:app.js
+app.js
+```js
 function hello(arg_469762052) {
     var arg = arg_469762052;
     console.log(("hello " + arg));
@@ -293,10 +313,11 @@ hello(name);
 ```
 
 ### emit
-emitを使うと、その中で書いた処理がそのまま出力されるJSファイルに入れられます。
-JSターゲットの開発を行う時にはその中で素のJSの処理を定義することができます。
+With emit, the processing you write in is put directly into the output JS file.
+When developing a JS target, you can define the bare JavaScript it.
 
-```nim:app.nim
+app.nim
+```nim
 {.emit:"""
 function hello(arg){
   console.log("hello " + arg)
@@ -304,17 +325,19 @@ function hello(arg){
 """.}
 ```
 
-```js:app.js
+app.js
+```js
 function hello(arg){
   console.log("hello " + arg)
 }
 ```
 
 ### importjs
-JSの関数とNimの関数をマッピングし、Nimの世界からJSの関数を呼べるようにするために使います。
-`#`を使うと引数が前から順番に、`@`を使うと後ろ全部がその位置に挿入されます。
+It is used to map JS functions to Nim functions so that you can call JS functions from the Nim world.
+Using `#` inserts the arguments in order from the front, while using `@` inserts everything after in that position.
 
-```nim:app.nim
+app.nim
+```nim
 import std/jsffi
 
 {.emit:"""
@@ -328,7 +351,8 @@ proc add(a, b:int) {.importjs:"add(#, #)".}
 add(2, 3)
 ```
 
-```js:app.js
+app.js
+```js
 function add(a, b){
   console.log(a + b)
 }
@@ -336,13 +360,15 @@ function add(a, b){
 add(2, 3);
 ```
 
-## 実践的な開発を行う
-ではこれまで見てきたことを踏まえて、Preactという軽量なReact風ライブラリをNimから呼び出して使ってみましょう。
+## Doing Practical Development
+Now, based on what we have seen so far, let's call Preact, a lightweight React-like library, from Nim and use it.
 
 https://preactjs.com/
 
-ここで使うHTMLファイルはこのようにします。
-```html:index.html
+The HTML file used here should look like this.
+
+index.html
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -356,15 +382,16 @@ https://preactjs.com/
 </html>
 ```
 
-### Preactの処理をNimから呼ぶ
+### Call Preact function from Nim.
 
-`emit`を使ってCDNからライブラリをインポートし、`importjs`を使ってライブラリの関数とNimの関数をマッピングします。
+Import libraries from CDN using `emit` and map library functions to Nim functions using `importjs`.
 
-```nim:lib.nim
+lib.nim
+```nim
 import std/dom
 import std/jsffi
 
-# ==================== Preactの定義 ====================
+# ==================== Definition of Preact ====================
 
 {.emit: """
 import { h, render } from 'https://cdn.jsdelivr.net/npm/preact@10.11.3/+esm';
@@ -419,10 +446,11 @@ proc useEffect*(cb: proc(), dependency: array) {.importjs: "useEffect(#, [])".}
 proc useEffect*(cb: proc(), dependency: seq[States]) {.importjs: "useEffect(#, #)".}
 ```
 
-ライブラリの呼び出し側はこのようにします。
-JSXの部分はJSが解釈する文字列であり、その中で呼び出したい変数や関数はそこに書いたとおりの変数名で呼ばれることを期待するため、`{.exportc.}`を使ってsuffixが付かないようにします。
+The caller of the library does this.
+The JSX part is a string that JS interprets, and the variable or function you want to call on it is expected to be called with the variable name as written there, so use `{.exportc.}` to avoid suffixes.
 
-```nim:app.nim
+app.nim
+```nim
 import std/jsffi
 import std/dom
 import ./lib
@@ -447,16 +475,16 @@ proc App():Component {.exportc.} =
 renderApp(App, document.getElementById("app"))
 ```
 
-このように動きます。
-![](https://storage.googleapis.com/zenn-user-upload/2a2a229dfea6-20230213.jpg)
+It works like this.
+![It works like this.](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/wuz5srd2rhr68qvryk9j.jpg)
 
-### JavaScriptの静的型付けとしてのNim
+### Nim as a static typing in JavaScript
 ```nim
 let (message {.exportc.}, setMessage) = useState("")
 ```
 
-ここでの`setMessage`はcstring型しか引数として受け付けない関数である`StrStateSetter`です。
-`lib.nim`でこのように定義しているからです。
+The `setMessage` here is `StrStateSetter`, a function that only accepts cstring types as arguments.
+This is because `lib.nim` defines it as bellow.
 
 ```nim
 type StrStateSetter = proc(arg: cstring)
@@ -469,7 +497,7 @@ proc useState*(arg: cstring): (cstring, StrStateSetter) =
   return (value, setter)
 ```
 
-もしここでint型を入れようとするとどうなるでしょうか
+What if we try to put an int variable here?
 
 ```nim
 proc setMsg(e:Event) {.exportc.} =
@@ -477,7 +505,7 @@ proc setMsg(e:Event) {.exportc.} =
   setMessage(1)
 ```
 
-もちろんコンパイルエラーになります。
+Of course compile time error raised.
 
 ```sh
 /projects/nimjs/app.nim(11, 15) Error: type mismatch: got <int literal(1)>
@@ -485,10 +513,12 @@ but expected one of:
 StrStateSetter = proc (arg: cstring){.closure.}
 ```
 
-## 終わりに
-NimでJavaScriptターゲットの開発をするテクニックについて紹介しました。
-このようにNodeJSの環境を使うことなく、非常に簡単にJSの資産を使ってNimでReact風SPAを静的な型安全に作れることがわかりました。
-今回紹介したことをベースにして、Nim製フロントエンドフレームワークの開発を進めていきます。応援してくれたら嬉しいです。
-またJSをラップしたNimのライブラリの資産が増えていくことも願っています。
+## Conclusion
+I introduced a technique for developing JavaScript targets in Nim.
+As you can see, we found that we can very easily create a React-like SPA in Nim using JS assets in a static type-safe manner without using the NodeJS environment.
+I will continue to develop a front-end framework made by Nim based on what I have introduced here. I would appreciate your support.
+I also hope to see more Nim library assets that wrap JavaScript.
 
 https://github.com/itsumura-h/nim-palladian
+
+https://itsumura-h.github.io/nim-palladian/
