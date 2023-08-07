@@ -10,6 +10,7 @@
 - [Nimのウェブフレームワークをマルチスレッド化するための断片的な知識](./articles/354a8873832a12.md)
 - [RustをNimから呼び出す](./articles/3db2134ff88763.md)
 - [NimでJavaScriptターゲットの開発をする方法](./articles/d935a9205edf55.md)
+- [ICPのETHインテグレーションの仕組みと未来](./articles//1b79a67341e477.md)
 
 ```
 # 記事の作成
