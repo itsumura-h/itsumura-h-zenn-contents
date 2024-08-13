@@ -4,6 +4,7 @@
 
 - [Nimのメモリ管理を理解する② ― Nimのムーブセマンティクス](./articles/af2b2b9f8fd890.md)
 - [Nimのメモリ管理を理解する③ ― GCなしのNim](./articles/0dcbc08aed1a25.md)
+  - [Nim without GC](../translate-sources/Nim%20without%20GC.md)
 - [Nimのメモリ管理を理解する④ ― ORC - アルゴリズムによるアドバンテージ](./articles/efffa86d9177b1.md)
 - [Nimのメモリ管理を理解する⑤ ― ムーブセマンティクスとデストラクタ](./articles/92bdd7afe1fc29.md)
 - [Nim製フルスタックWebフレームワークBasolatoがめざす開発の姿とそれを実現するアーキテクチャ](./articles/0e2dca3e13fcf5.md)
