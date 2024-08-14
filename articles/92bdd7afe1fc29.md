@@ -16,6 +16,7 @@ published: true
 - [Nimのメモリ管理を理解する③ ― GCなしのNim](https://zenn.dev/dumblepy/articles/0dcbc08aed1a25)
 - [Nimのメモリ管理を理解する④ ― ORC - アルゴリズムによるアドバンテージ](https://zenn.dev/dumblepy/articles/efffa86d9177b1)
 - [Nimのメモリ管理を理解する⑤ ― ムーブセマンティクスとデストラクタ](https://zenn.dev/dumblepy/articles/92bdd7afe1fc29)
+- [Nimのメモリ管理を理解する⑥ ー Rustと比較して](https://zenn.dev/dumblepy/articles/d17f07bd973c6b)
 
 ---
 
