@@ -124,9 +124,7 @@ proc put(t: var Table; key, val: sink string) =
   swap t.a[h].val, val
 
 proc main =
-  let key
-
- <- stdin.readLine()
+  let key <- stdin.readLine()
   let val <- stdin.readLine()
   var t = createTable()
   t.put key, val

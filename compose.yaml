@@ -1,0 +1,16 @@
+services:
+  app:
+    build: ./docker/app
+    tty: true
+    ports:
+      - 9010:8000
+    volumes:
+      - .:/application
+
+  # db:
+  #   image: postgres:alpine #pgsqlが準備されているimageを指定
+  #   tty: true
+  #   environment:
+  #     POSTGRES_DB: database
+  #     POSTGRES_USER: user
+  #     POSTGRES_PASSWORD: pass

@@ -1,5 +1,5 @@
 FROM ubuntu:20.04
-ARG IMAGETAG="1.6.6"
+ARG IMAGETAG="2.0.4"
 
 # prevent timezone dialogue
 ENV DEBIAN_FRONTEND=noninteractive

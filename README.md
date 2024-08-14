@@ -10,6 +10,7 @@
   - [](./translate-sources/ORC%20-%20Vorsprung%20durch%20Algorithmen.md)
 - [Nimのメモリ管理を理解する⑤ ― ムーブセマンティクスとデストラクタ](./articles/92bdd7afe1fc29.md)
   - [Nim Destructors and Move Semantics](./translate-sources/Nim%20Destructors%20and%20Move%20Semantics.md)
+- [Nimのメモリ管理を理解する⑥ ー Rustと比較して](./articles/d17f07bd973c6b.md)
 - [Nim製フルスタックWebフレームワークBasolatoがめざす開発の姿とそれを実現するアーキテクチャ](./articles/0e2dca3e13fcf5.md)
 - [Nimのウェブフレームワークをマルチスレッド化するための断片的な知識](./articles/354a8873832a12.md)
 - [RustをNimから呼び出す](./articles/3db2134ff88763.md)
