@@ -1,6 +1,6 @@
 services:
   app:
-    build: ./docker/app
+    build: ./docker/zenn
     tty: true
     ports:
       - 9010:8000
