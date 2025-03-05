@@ -10,6 +10,8 @@ RUN apt update && \
         ca-certificates \
         curl \
         git
+
+WORKDIR /root
 # nodejs
 # https://nodejs.org/en/download/prebuilt-binaries
 ARG NODE_VERSION=22.13.1
