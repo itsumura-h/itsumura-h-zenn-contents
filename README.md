@@ -16,11 +16,12 @@
 - [RustをNimから呼び出す](./articles/3db2134ff88763.md)
 - [NimでJavaScriptターゲットの開発をする方法](./articles/d935a9205edf55.md)
 - [ICPのETHインテグレーションの仕組みと未来](./articles//1b79a67341e477.md)
+- [Node.jsでのバックエンドアプリケーションで環境変数を管理するベストプラクティス](./articles/42298ff36f7e4b.md)
 
 ```
 # 記事の作成
-yarn zenn new:article
+pnpm zenn new:article
 
 # プレビュー
-yarn zenn preview
+pnpm zenn preview
 ```
